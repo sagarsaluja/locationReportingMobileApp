@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.locationmodule.LocationModule; // Import the LocationModule class
+
 public class LocationPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new LocationModule(reactContext));
+        modules.add(new LocationModule(reactContext)); // Add the LocationModule to the list of modules
         return modules;
     }
 

@@ -74,6 +74,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
         // Request location updates
+        Log.d(TAG, "startLocationUpdates called");
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000); // Update interval in milliseconds
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
