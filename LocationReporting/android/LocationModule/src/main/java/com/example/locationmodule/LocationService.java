@@ -51,17 +51,18 @@ public class LocationService extends Service implements OnRequestPermissionsResu
             startLocationUpdates();
         } else {
             // Permission not granted, request it
-            requestLocationPermission();
+            createNotificationAndTakePermission();
         }
 
         return START_STICKY;
     }
-    private void requestLocationPermission() {
+    private void createNotificationAndTakePermission() {
+        Log.d(TAG, "requestLocationPermission called");
         // Build a notification for the foreground service
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Location Service")
                 .setContentText("Running...")
-                .setLargeIcon(null)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);
@@ -88,6 +89,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult called");
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, start location updates

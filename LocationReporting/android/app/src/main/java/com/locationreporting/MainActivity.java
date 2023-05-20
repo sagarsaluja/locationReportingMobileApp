@@ -7,8 +7,10 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.example.locationmodule.LocationService;
+import android.util.Log;
 
+import com.example.locationmodule.LocationService;
+import android.util.Log;
 public class MainActivity extends ReactActivity {
 
   /**
@@ -36,12 +38,11 @@ public class MainActivity extends ReactActivity {
         DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
         );
   }
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    // Start the LocationService
-    Intent serviceIntent = new Intent(getApplicationContext(), LocationService.class);
-    startService(serviceIntent);
-  }
+  // @Override
+  // protected void onCreate(Bundle savedInstanceState) {
+  //   super.onCreate(savedInstanceState);
+  //   // Start the LocationService
+  //   Intent serviceIntent = new Intent(getApplicationContext(), LocationService.class);
+  //   startService(serviceIntent);
+  // }
 }

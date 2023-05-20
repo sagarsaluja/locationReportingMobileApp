@@ -2,13 +2,14 @@ import React from 'react';
 import { Text, TouchableOpacity, View, NativeModules } from 'react-native';
 
 const { LocationModule } = NativeModules;
+//the name here should be same as the one returned by the getName() method in LocationModule.java
 
 const App = () => {
   const startLocationService = async () => {
     try {
       console.log("Starting location reporting...");
       // await LocationModule.startLocationUpdates();
-      await LocationModule.startLocationUpdates();
+      await LocationModule.startLocationUpdates2();
 
       console.log("Location reporting started.");
     } catch (error) {

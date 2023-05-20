@@ -58,22 +58,25 @@ public class LocationModule extends ReactContextBaseJavaModule {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.d(TAG, "onLocationChanged");
+                Log.d(TAG, "onLocationChanged called LocationModule");
                 sendLocationUpdate(location);
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.d(TAG, "onStatusChanged called LocationModule");
                 // Handle status changes if needed
             }
 
             @Override
             public void onProviderEnabled(String provider) {
+                Log.d(TAG, "onProviderEnabled called LocationModule");
                 // Handle provider enabled if needed
             }
 
             @Override
             public void onProviderDisabled(String provider) {
+                Log.d(TAG, "onProviderDisabled called LocationModule");
                 // Handle provider disabled if needed
             }
         };
@@ -81,11 +84,14 @@ public class LocationModule extends ReactContextBaseJavaModule {
 
        @Override
     public String getName() {
+           Log.d(TAG, "getName called LocationModule");
         return "LocationModule";
     }
 
     @ReactMethod
     public void startLocationUpdates() {
+        //this method is exposed to js. 
+        Log.d(TAG, "startLocationUpdates called LocationModule");
         // Check for location permission
         if (ContextCompat.checkSelfPermission(reactContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Location permission not granted, request it
@@ -95,6 +101,7 @@ public class LocationModule extends ReactContextBaseJavaModule {
 
         // Start location updates
         try {
+            Log.d(TAG, "attempting to start location updates");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BETWEEN_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, locationListener);
             // You can also request updates from other providers like NETWORK_PROVIDER if needed
             Log.d(TAG, "Location updates started");
@@ -102,8 +109,24 @@ public class LocationModule extends ReactContextBaseJavaModule {
             Log.e(TAG, "Failed to start location updates: " + e.getMessage());
         }
     }
+    @ReactMethod
+    public void startLocationUpdates2() {
+        // Check for location permission
+        if (ContextCompat.checkSelfPermission(reactContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Location permission not granted, request it
+            ActivityCompat.requestPermissions(getCurrentActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+            
+            Log.d(TAG, "returning after permission check from startLocationUpdates2");
+            return;
+        }
+
+        // Start the LocationService
+        Intent serviceIntent = new Intent(reactContext, LocationService.class);
+        reactContext.startService(serviceIntent);
+    }
 
     private void sendLocationUpdate(Location location) {
+        Log.d(TAG, "sendLocationUpdate called LocationModule");
         WritableMap params = Arguments.createMap();
         params.putDouble("latitude", location.getLatitude());
         params.putDouble("longitude", location.getLongitude());
@@ -114,12 +137,13 @@ public class LocationModule extends ReactContextBaseJavaModule {
     }
     
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-
+        Log.d(TAG, "onActivity called LocationModule");
         // Handle the activity result here if needed
     }
 
     private final ActivityEventListener activityEventListener = new BaseActivityEventListener() {
         public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+            Log.d(TAG, "onRequestPermissionsResult called LocationModule");
             if (requestCode == PERMISSION_REQUEST_CODE) {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission granted, resolve the promise with the location
