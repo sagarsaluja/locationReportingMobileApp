@@ -25,7 +25,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
 
     private static final String TAG = "LocationService";
     private static final String CHANNEL_ID = "LocationServiceChannel";
-    private static final int NOTIFICATION_ID = 123;
+    private static final int NOTIFICATION_ID = 1234;
     private static final int PERMISSION_REQUEST_CODE = 1001;
 
 
@@ -64,7 +64,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
                 .setContentText("Running...")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 .build();
-
+                
         startForeground(NOTIFICATION_ID, notification);
 
         // Request permission from the user

@@ -39,6 +39,22 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.provider.Settings;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.BaseActivityEventListener;
+import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+
+
 
 public class LocationModule extends ReactContextBaseJavaModule {
     private static final String TAG = "LocationModule";
@@ -109,21 +125,32 @@ public class LocationModule extends ReactContextBaseJavaModule {
             Log.e(TAG, "Failed to start location updates: " + e.getMessage());
         }
     }
+
     @ReactMethod
     public void startLocationUpdates2() {
         // Check for location permission
         if (ContextCompat.checkSelfPermission(reactContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Location permission not granted, request it
             ActivityCompat.requestPermissions(getCurrentActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-            
-            Log.d(TAG, "returning after permission check from startLocationUpdates2");
-            return;
+        } else {
+            // Location permission already granted, check notification permission
+            if (NotificationManagerCompat.from(reactContext).areNotificationsEnabled()) {
+                // Notification permission granted, start the LocationService
+                startLocationService();
+            } else {
+                // Notification permission not granted, request it
+                Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, reactContext.getPackageName());
+                reactContext.startActivityForResult(intent, PERMISSION_REQUEST_CODE, null);
+            }
         }
-
+    }
+    private void startLocationService() {
         // Start the LocationService
         Intent serviceIntent = new Intent(reactContext, LocationService.class);
         reactContext.startService(serviceIntent);
     }
+
 
     private void sendLocationUpdate(Location location) {
         Log.d(TAG, "sendLocationUpdate called LocationModule");
