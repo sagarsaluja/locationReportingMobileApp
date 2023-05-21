@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 public class LocationService extends Service implements OnRequestPermissionsResultCallback {
@@ -28,13 +30,12 @@ public class LocationService extends Service implements OnRequestPermissionsResu
     private static final int NOTIFICATION_ID = 1234;
     private static final int PERMISSION_REQUEST_CODE = 1001;
 
-
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
 
     @Override
     public void onCreate() {
-        Log.d(TAG,"onCreate called");
+        Log.d(TAG, "onCreate called");
         super.onCreate();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
@@ -54,16 +55,15 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         }
         return START_STICKY;
     }
+
     private void createNotificationAndStartService() {
-        Log.d(TAG, "requestLocationPermission called");
+        Log.d(TAG, "createNotificationAndStartService called");
         // Build a notification for the foreground service
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Location Service")
                 .setContentText("Running...")
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 .build();
-                
-
 
         // Request permission from the user
         Intent permissionIntent = new Intent(this, LocationPermissionActivity.class);
@@ -71,6 +71,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         startActivity(permissionIntent);
         startForeground(NOTIFICATION_ID, notification);
     }
+
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
         // Request location updates
@@ -80,8 +81,17 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         locationCallback = new LocationCallback() {
-            // Location callback implementation...
-
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    Log.d(TAG, "Latitude: " + latitude + ", Longitude: " + longitude);
+                }
+            }
         };
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
@@ -102,10 +112,9 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         }
     }
 
-
     @Override
     public void onDestroy() {
-        Log.d(TAG,"onDestroy called");
+        Log.d(TAG, "onDestroy called");
         super.onDestroy();
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
@@ -113,7 +122,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG,"onBind called");
+        Log.d(TAG, "onBind called");
         return null;
     }
 
