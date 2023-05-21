@@ -48,15 +48,13 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         // Check if the location permission is granted
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Permission already granted, continue with location updates
-            startLocationUpdates();
-        } else {
-            // Permission not granted, request it
-            createNotificationAndTakePermission();
-        }
 
+            createNotificationAndStartService();
+            startLocationUpdates();
+        }
         return START_STICKY;
     }
-    private void createNotificationAndTakePermission() {
+    private void createNotificationAndStartService() {
         Log.d(TAG, "requestLocationPermission called");
         // Build a notification for the foreground service
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -65,12 +63,13 @@ public class LocationService extends Service implements OnRequestPermissionsResu
                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
                 .build();
                 
-        startForeground(NOTIFICATION_ID, notification);
+
 
         // Request permission from the user
         Intent permissionIntent = new Intent(this, LocationPermissionActivity.class);
         permissionIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(permissionIntent);
+        startForeground(NOTIFICATION_ID, notification);
     }
     @SuppressLint("MissingPermission")
     private void startLocationUpdates() {
@@ -82,6 +81,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
 
         locationCallback = new LocationCallback() {
             // Location callback implementation...
+
         };
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
