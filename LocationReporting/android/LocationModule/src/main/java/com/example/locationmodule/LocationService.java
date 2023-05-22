@@ -78,7 +78,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         Log.d(TAG, "startLocationUpdates called");
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000); // Update interval in milliseconds
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         locationCallback = new LocationCallback() {
             @Override
