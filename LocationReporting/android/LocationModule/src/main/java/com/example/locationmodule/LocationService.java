@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -91,6 +92,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
                     double longitude = location.getLongitude();
                     Log.d(TAG, "Latitude: " + latitude + ", Longitude: " + longitude);
                     updateNotification("Latitude: " + latitude + ", Longitude: " + longitude);
+                    sendLocationUpdate(latitude , longitude);
                 }
             }
         };
@@ -120,6 +122,13 @@ public class LocationService extends Service implements OnRequestPermissionsResu
                 stopSelf(); // Stop the service if permission is denied
             }
         }
+    }
+    private void sendLocationUpdate(double latitude, double longitude) {
+        Log.d(TAG, "sendLocationUpdate to react native called");
+        Intent intent = new Intent("LOCATION_UPDATE");
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @Override
