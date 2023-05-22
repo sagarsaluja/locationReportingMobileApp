@@ -90,11 +90,21 @@ public class LocationService extends Service implements OnRequestPermissionsResu
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
                     Log.d(TAG, "Latitude: " + latitude + ", Longitude: " + longitude);
+                    updateNotification("Latitude: " + latitude + ", Longitude: " + longitude);
                 }
             }
         };
 
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+    private void updateNotification(String contentText) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Location Service")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 
     @Override
@@ -117,6 +127,7 @@ public class LocationService extends Service implements OnRequestPermissionsResu
         Log.d(TAG, "onDestroy called");
         super.onDestroy();
         fusedLocationClient.removeLocationUpdates(locationCallback);
+        stopSelf();
     }
 
     @Nullable

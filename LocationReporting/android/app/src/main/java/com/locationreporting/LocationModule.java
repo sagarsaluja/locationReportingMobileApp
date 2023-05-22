@@ -145,6 +145,11 @@ public class LocationModule extends ReactContextBaseJavaModule {
             }
         }
     }
+    @ReactMethod
+    public void stopLocationUpdates2(){
+        Intent serviceIntent = new Intent(reactContext, LocationService.class);
+        reactContext.stopService(serviceIntent);
+    }
     private void startLocationService() {
         // Start the LocationService
         Intent serviceIntent = new Intent(reactContext, LocationService.class);
