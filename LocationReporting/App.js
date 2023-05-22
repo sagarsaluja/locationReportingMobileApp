@@ -1,10 +1,19 @@
-import React from 'react';
-import { Text, TouchableOpacity, View, NativeModules } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, TouchableOpacity, View, NativeModules, NativeEventEmitter } from 'react-native';
 
 const { LocationModule } = NativeModules;
 //the name here should be same as the one returned by the getName() method in LocationModule.java
 
 const App = () => {
+  const locationServiceEmitter = new NativeEventEmitter(NativeModules.LocationModule);
+  locationServiceEmitter.addListener('LOCATION_UPDATE', (location) => {
+    console.log("received location", location);
+  });
+  useEffect(() => {
+    return () => {
+      locationServiceEmitter.removeListener('LOCATION_UPDATE');
+    }
+  })
   const startLocationReporting = async () => {
     try {
       console.log("Starting location reporting...");
