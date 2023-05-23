@@ -22,7 +22,15 @@ const App = () => {
   const [currentLocation, setCurrentLocation] = React.useState([]);
   const ShowLocation = () => {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ marginBottom: 120 }}>
+        {isReporting && currentLocation && <ShowLatLon />}
+      </View>
+    )
+  }
+
+  const ShowLatLon = () => {
+    return (
+      <View>
         <Text>{`Latitude : ${currentLocation[0]}`}</Text>
         <Text>{`Longitude : ${currentLocation[1]}`}</Text>
       </View>
@@ -87,7 +95,7 @@ const App = () => {
         <Text>This is a location reporting app</Text>
       </View>
       <ShowButton isReporting={isReporting} />
-      {isReporting && currentLocation && <ShowLocation />}
+      <ShowLocation />
     </View>
   );
 };
