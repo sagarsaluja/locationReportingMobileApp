@@ -156,6 +156,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.gms:play-services-base:17.6.0'
     implementation project(':LocationModule')
+    implementation 'com.android.support:support-v4:28.0.0' // Replace with the desired version}
+
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
