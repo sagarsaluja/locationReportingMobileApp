@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
 import { Text, TouchableOpacity, View, NativeModules, NativeEventEmitter } from 'react-native';
+import { LogBox } from 'react-native';
+
+LogBox.ignoreAllLogs();
 
 const { LocationModule } = NativeModules;
 //the name here should be same as the one returned by the getName() method in LocationModule.java

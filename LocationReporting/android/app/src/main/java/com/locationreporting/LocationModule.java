@@ -37,6 +37,7 @@ public class LocationModule extends ReactContextBaseJavaModule {
     private LocationListener locationListener;
     private BroadcastReceiver locationUpdateReceiver;
 
+
     public LocationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
